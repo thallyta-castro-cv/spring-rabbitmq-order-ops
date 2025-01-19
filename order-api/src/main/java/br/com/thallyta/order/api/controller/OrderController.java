@@ -18,15 +18,16 @@ public class OrderController implements OrderControllerOpenApi {
 
     private final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-    private final OrderService service;
+    private final OrderService orderService;
 
-    public OrderController(OrderService service) {
-        this.service = service;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @PostMapping
     public ResponseEntity<Order> create(@RequestBody Order order) {
         logger.info("Pedido recebido: {}", order.toString());
+        order = orderService.queueOrder(order);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 }

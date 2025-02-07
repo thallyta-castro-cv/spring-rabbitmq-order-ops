@@ -18,8 +18,14 @@ public class OrderListener {
     }
 
     @RabbitListener(queues = "pedidos.v1.pedido-criado.gerar-notificacao")
-    private void sendNotification(Order order){
-        emailService.sendEmail(order);
-        logger.info("Notificação gerada: {}", order.toString());
+    private void sendNotificationOrderReceive(Order order){
+        emailService.sendEmail(order, "Pedido de compra", "realizado");
+        logger.info("Notificação gerada de compra: {}", order.toString());
+    }
+
+    @RabbitListener(queues = "pedidos.v1.pedido-processado")
+    private void sendNotificationOrderProcessed(Order order){
+        emailService.sendEmail(order, "Pedido confirmado", "confirmado");
+        logger.info("Notificação de pedido confirmado: {}", order.toString());
     }
 }

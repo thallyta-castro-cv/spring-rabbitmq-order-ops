@@ -14,23 +14,24 @@ public class EmailService {
         this.mailSender = mailSender;
     }
     
-    public void sendEmail(Order order){
+    public void sendEmail(Order order, String subject, String action){
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         
         simpleMailMessage.setFrom("pedidos-api@company.com");
         simpleMailMessage.setTo(order.getNotificationEmail());
-        simpleMailMessage.setSubject("Pedido de compra");
-        simpleMailMessage.setText(this.generateMessage(order));
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText(this.generateMessage(order, action));
         mailSender.send(simpleMailMessage);
     }
 
-    private String generateMessage(Order order) {
+    private String generateMessage(Order order, String action) {
         String orderId = order.getId().toString();
         String client = order.getClient();
         String value = String.valueOf(order.getTotalValue());
         String status = order.getStatus().name();
 
-        return String.format("Olá %s seu pedido de nº %s no valor de %s, foi realizado com sucesso.%nStatus: %s",
-                client, orderId, value, status);
+        return String.format("Olá %s, seu pedido de nº %s no valor de %s foi %s com sucesso.%nStatus: %s",
+                client, orderId, value, action, status);
+
     }
 }
